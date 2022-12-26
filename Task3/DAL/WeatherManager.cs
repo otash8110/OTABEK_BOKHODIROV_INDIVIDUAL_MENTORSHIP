@@ -24,7 +24,7 @@ namespace DAL
 
                 string data = await content.ReadAsStringAsync();
 
-                if (data != null)
+                if (data != null && res.StatusCode != System.Net.HttpStatusCode.NotFound)
                 {
                     var dataObject = JObject.Parse(data);
 
