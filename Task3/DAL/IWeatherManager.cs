@@ -2,6 +2,6 @@
 {
     public interface IWeatherManager
     {
-        Task<WeatherResponse> FetchWeatherByCityName(string cityName);
+        Task<WeatherResponse> FetchWeatherByCityNameAsync(string cityName);
     }
 }

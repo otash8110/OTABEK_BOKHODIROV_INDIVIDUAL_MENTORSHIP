@@ -5,16 +5,17 @@ namespace BL
     public class WeatherService: IWeatherService
     {
         private readonly IWeatherManager weatherManager;
+
         public WeatherService(IWeatherManager weatherManager)
         {
             this.weatherManager = weatherManager;
         }
 
-        public async Task<string> GetWeatherByCityName(string cityName)
+        public async Task<string> GetWeatherByCityNameAsync(string cityName)
         {
             if (!ValidateCityName(cityName))
             {
-                WeatherResponse response = await this.weatherManager.FetchWeatherByCityName(cityName);
+                WeatherResponse response = await this.weatherManager.FetchWeatherByCityNameAsync(cityName);
                 if (response != null)
                 {
                     var temperatureComment = GenerateTemperatureComment(response.Main.Temp);

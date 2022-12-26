@@ -12,7 +12,7 @@ namespace DAL
             this.apiKey = apiKey;
         }
 
-        public async Task<WeatherResponse> FetchWeatherByCityName(string cityName)
+        public async Task<WeatherResponse> FetchWeatherByCityNameAsync(string cityName)
         {
             var fetchURL = $"{weatherEndpointURL}?q={cityName}&appid={apiKey}&units=metric";
 
