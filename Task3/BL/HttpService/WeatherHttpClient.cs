@@ -1,18 +1,19 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using DAL;
+using Newtonsoft.Json.Linq;
 
-namespace DAL
+namespace BL.HttpService
 {
-    public class WeatherManager: IWeatherManager
+    public class WeatherHttpClient: IWeatherHttpClient
     {
         private string weatherEndpointURL = "https://api.openweathermap.org/data/2.5/weather";
         private string apiKey;
 
-        public WeatherManager(string apiKey)
+        public WeatherHttpClient(string apiKey)
         {
             this.apiKey = apiKey;
         }
 
-        public async Task<WeatherResponse> FetchWeatherByCityNameAsync(string cityName)
+        public async Task<Weather> FetchWeatherByCityNameAsync(string cityName)
         {
             var fetchURL = $"{weatherEndpointURL}?q={cityName}&appid={apiKey}&units=metric";
 
@@ -28,7 +29,7 @@ namespace DAL
                 {
                     var dataObject = JObject.Parse(data);
 
-                    var objectDeserialized = dataObject.ToObject<WeatherResponse>();
+                    var objectDeserialized = dataObject.ToObject<Weather>();
 
                     return objectDeserialized;
                 }

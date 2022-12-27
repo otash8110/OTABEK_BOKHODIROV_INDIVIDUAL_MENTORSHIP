@@ -1,6 +1,6 @@
 ﻿namespace DAL
 {
-    public class WeatherResponse
+    public class Weather
     {
         public WeatherMainElements Main { get; set; }
     }

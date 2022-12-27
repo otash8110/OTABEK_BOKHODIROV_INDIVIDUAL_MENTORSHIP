@@ -1,4 +1,5 @@
 ﻿using BL;
+using BL.HttpService;
 using DAL;
 using Microsoft.Extensions.Configuration;
 
@@ -12,7 +13,7 @@ namespace ConsoleApp
         static async Task Main(string[] args)
         {
             SetupConfiguration();
-            IWeatherManager weatherManager = new WeatherManager(configuration["weather-api-key"]);
+            IWeatherHttpClient weatherManager = new WeatherHttpClient(configuration["weather-api-key"]);
             IWeatherService weatherService = new WeatherService(weatherManager);
             while(flag)
             {

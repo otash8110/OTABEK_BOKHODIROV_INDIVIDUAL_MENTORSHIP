@@ -1,23 +1,27 @@
-﻿using DAL;
+﻿using BL.HttpService;
+using DAL;
 
 namespace BL
 {
     public class WeatherService: IWeatherService
     {
-        private readonly IWeatherManager weatherManager;
+        private readonly IWeatherHttpClient weatherHttpClient;
+        private readonly IWeatherRepository weatherRepository;
 
-        public WeatherService(IWeatherManager weatherManager)
+        public WeatherService(IWeatherHttpClient weatherHttpClient, IWeatherRepository weatherRepository)
         {
-            this.weatherManager = weatherManager;
+            this.weatherHttpClient = weatherHttpClient;
+            this.weatherRepository = weatherRepository;
         }
 
         public async Task<string> GetWeatherByCityNameAsync(string cityName)
         {
             if (!ValidateCityName(cityName))
             {
-                WeatherResponse response = await this.weatherManager.FetchWeatherByCityNameAsync(cityName);
+                Weather response = await this.weatherHttpClient.FetchWeatherByCityNameAsync(cityName);
                 if (response != null)
                 {
+                    this.weatherRepository.Save(response);
                     var temperatureComment = GenerateTemperatureComment(response.Main.Temp);
 
                     return $"In {cityName} {response.Main.Temp} °C. {temperatureComment}";
