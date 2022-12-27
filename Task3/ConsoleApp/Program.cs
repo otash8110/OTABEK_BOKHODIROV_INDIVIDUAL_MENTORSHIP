@@ -13,8 +13,10 @@ namespace ConsoleApp
         static async Task Main(string[] args)
         {
             SetupConfiguration();
+
+            IWeatherRepository weatherRepository = new WeatherRepository();
             IWeatherHttpClient weatherManager = new WeatherHttpClient(configuration["weather-api-key"]);
-            IWeatherService weatherService = new WeatherService(weatherManager);
+            IWeatherService weatherService = new WeatherService(weatherManager, weatherRepository);
             while(flag)
             {
                 try
