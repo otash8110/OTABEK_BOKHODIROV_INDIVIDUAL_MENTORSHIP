@@ -1,5 +1,6 @@
 ﻿using BL;
 using BL.HttpService;
+using BL.Validation;
 using DAL;
 using Microsoft.Extensions.Configuration;
 
@@ -14,9 +15,10 @@ namespace ConsoleApp
         {
             SetupConfiguration();
 
+            IValidation validation = new ValidationService();
             IWeatherRepository weatherRepository = new WeatherRepository();
             IWeatherHttpClient weatherManager = new WeatherHttpClient(configuration["weather-api-key"]);
-            IWeatherService weatherService = new WeatherService(weatherManager, weatherRepository);
+            IWeatherService weatherService = new WeatherService(weatherManager, weatherRepository, validation);
             while(flag)
             {
                 try

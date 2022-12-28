@@ -1,4 +1,5 @@
 ﻿using BL.HttpService;
+using BL.Validation;
 using DAL;
 
 namespace BL
@@ -7,21 +8,25 @@ namespace BL
     {
         private readonly IWeatherHttpClient weatherHttpClient;
         private readonly IWeatherRepository weatherRepository;
+        private readonly IValidation validationService;
 
-        public WeatherService(IWeatherHttpClient weatherHttpClient, IWeatherRepository weatherRepository)
+        public WeatherService(IWeatherHttpClient weatherHttpClient,
+            IWeatherRepository weatherRepository,
+            IValidation validationService)
         {
             this.weatherHttpClient = weatherHttpClient;
             this.weatherRepository = weatherRepository;
+            this.validationService = validationService;
         }
 
         public async Task<string> GetWeatherByCityNameAsync(string cityName)
         {
-            if (!ValidateCityName(cityName))
+            if (!validationService.ValidateCityName(cityName))
             {
-                Weather response = await this.weatherHttpClient.FetchWeatherByCityNameAsync(cityName);
+                Weather response = await weatherHttpClient.FetchWeatherByCityNameAsync(cityName);
                 if (response != null)
                 {
-                    this.weatherRepository.Insert(response);
+                    weatherRepository.Insert(response);
                     var temperatureComment = GenerateTemperatureComment(response.Main.Temp);
 
                     return $"In {cityName} {response.Main.Temp} °C. {temperatureComment}";
@@ -32,11 +37,6 @@ namespace BL
             }
             else
                 throw new ArgumentException("City name is empty or null");
-        }
-
-        private bool ValidateCityName(string cityName)
-        {
-            return String.IsNullOrEmpty(cityName);
         }
 
         private string GenerateTemperatureComment(float value)
