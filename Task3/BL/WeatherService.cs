@@ -21,7 +21,7 @@ namespace BL
                 Weather response = await this.weatherHttpClient.FetchWeatherByCityNameAsync(cityName);
                 if (response != null)
                 {
-                    this.weatherRepository.Save(response);
+                    this.weatherRepository.Insert(response);
                     var temperatureComment = GenerateTemperatureComment(response.Main.Temp);
 
                     return $"In {cityName} {response.Main.Temp} °C. {temperatureComment}";

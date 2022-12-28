@@ -2,6 +2,6 @@
 {
     public interface IWeatherRepository
     {
-        void Save(Weather weather);
+        void Insert(Weather weather);
     }
 }

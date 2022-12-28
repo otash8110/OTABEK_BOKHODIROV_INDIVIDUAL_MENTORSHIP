@@ -3,7 +3,7 @@
     public class WeatherRepository : IWeatherRepository
     {
         private List<Weather> listOfWeather;
-        public void Save(Weather weather)
+        public void Insert(Weather weather)
         {
             listOfWeather.Add(weather);
         }
