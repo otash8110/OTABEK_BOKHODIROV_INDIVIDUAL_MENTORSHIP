@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{BCA4C115-074E-4861-973D-01C56A570515}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{BCA4C115-074E-4861-973D-01C56A570515}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{DD9EC375-A717-428D-A6E6-949B6803140F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{DD9EC375-A717-428D-A6E6-949B6803140F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BL", "BL\BL.csproj", "{F47EB69F-FE8B-45CE-8A1E-76CA390DB2C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BL", "BL\BL.csproj", "{F47EB69F-FE8B-45CE-8A1E-76CA390DB2C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BL.Tests", "BL.Tests\BL.Tests.csproj", "{1EADED83-A1C8-4CD5-91B7-5B7F7E902544}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{F47EB69F-FE8B-45CE-8A1E-76CA390DB2C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F47EB69F-FE8B-45CE-8A1E-76CA390DB2C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F47EB69F-FE8B-45CE-8A1E-76CA390DB2C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EADED83-A1C8-4CD5-91B7-5B7F7E902544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EADED83-A1C8-4CD5-91B7-5B7F7E902544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EADED83-A1C8-4CD5-91B7-5B7F7E902544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EADED83-A1C8-4CD5-91B7-5B7F7E902544}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
