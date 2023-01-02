@@ -32,7 +32,16 @@ namespace BL.Tests
         }
 
         [Fact]
-        public async void GetWeatherByCityNameAsync_NullPassed_ReturnsNullException()
+        public async void GetWeatherByCityNameAsync_NullPassed_ReturnsArgumentException()
+        {
+            var weatherService = new WeatherService(httpClientMock.Object, weatherRepositoryMock.Object, validation);
+
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await weatherService.GetWeatherByCityNameAsync(null));
+        }
+
+        [Fact]
+        public async void GetWeatherByCityNameAsync_EmptyStringPassed_ReturnsArgumentException()
         {
             var weatherService = new WeatherService(httpClientMock.Object, weatherRepositoryMock.Object, validation);
 
@@ -46,6 +55,7 @@ namespace BL.Tests
             {
                 Temp = 39
             };
+
             return await Task.FromResult(new Weather()
             {
                 Main = temperature
