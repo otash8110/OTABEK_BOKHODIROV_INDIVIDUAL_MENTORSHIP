@@ -51,7 +51,7 @@ namespace BL.Tests
 
         private async Task<Weather> FetchResultString()
         {
-            var temperature = new WeatherMainElements()
+            var temperature = new WeatherMain()
             {
                 Temp = 39
             };

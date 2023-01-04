@@ -8,17 +8,18 @@ namespace ConsoleApp
 {
     internal class Program
     {
-        private static IConfiguration configuration;
+        public static IConfiguration configuration;
         private static bool flag = true;
 
         static async Task Main(string[] args)
         {
             SetupConfiguration();
 
-            IValidation validation = new ValidationService();
+            IValidation validation = new ValidationService(configuration);
             IWeatherRepository weatherRepository = new WeatherRepository();
             IWeatherHttpClient weatherManager = new WeatherHttpClient(configuration["weather-api-key"]);
             IWeatherService weatherService = new WeatherService(weatherManager, weatherRepository, validation);
+            
             while(flag)
             {
                 try
@@ -39,6 +40,7 @@ namespace ConsoleApp
 
         static void SetupConfiguration() => configuration = new ConfigurationBuilder()
             .AddUserSecrets<Program>()
+            .AddJsonFile("appsettings.json")
             .Build();
     }
 }

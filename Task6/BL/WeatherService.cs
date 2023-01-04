@@ -19,6 +19,11 @@ namespace BL
             this.validationService = validationService;
         }
 
+        public Task<string> GetFutureWeatherByCityNameAsync(string cityName, int days)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<string> GetWeatherByCityNameAsync(string cityName)
         {
             if (!validationService.ValidateCityName(cityName))
