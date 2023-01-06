@@ -19,9 +19,34 @@ namespace BL
             this.validationService = validationService;
         }
 
-        public Task<string> GetFutureWeatherByCityNameAsync(string cityName, int days)
+        public async Task<string> GetFutureWeatherByCityNameAsync(string cityName, int days)
         {
-            throw new NotImplementedException();
+            if (!validationService.ValidateCityName(cityName) && validationService.ValidateMinMaxDays(days))
+            {
+                WeatherForecast response =
+                    await weatherHttpClient.FetchWeatherListByCoordsAsync(cityName, days);
+                var dayNumber = 1;
+                var weatherStringResult = "";
+
+                weatherStringResult += $"{cityName} weather forecast:\n";
+
+                if (response != null)
+                {
+                    foreach (var item in response.Forecast.Forecastday)
+                    {
+                        var temperatureComment = GenerateTemperatureComment(item.Day.Avgtemp_c);
+
+                        weatherStringResult += $"Day {dayNumber}: {item.Day.Avgtemp_c}. {temperatureComment}\n";
+                        dayNumber++;
+                    }
+
+                    return weatherStringResult;
+                }
+                else
+                    throw new Exception("Could not fetch weather information");
+            }
+            else
+                throw new ArgumentException("City name is empty or null or days number is inaccurate");
         }
 
         public async Task<string> GetWeatherByCityNameAsync(string cityName)
