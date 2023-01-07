@@ -30,7 +30,7 @@ namespace ConsoleApp
                 {
                     Console.WriteLine("Enter city name to fetch a weather info:");
                     var cityName = Console.ReadLine();
-                    var weatherResult = await weatherService.GetFutureWeatherByCityNameAsync(cityName, 0, configuration);
+                    var weatherResult = await weatherService.GetFutureWeatherByCityNameAsync(cityName, 4, configuration);
 
                     Console.WriteLine(weatherResult);
                 }

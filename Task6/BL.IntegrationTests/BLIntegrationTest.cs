@@ -1,6 +1,7 @@
 using BL.HttpService;
 using BL.Validation;
 using DAL;
+using Microsoft.Extensions.Configuration;
 
 namespace BL.IntegrationTests
 {
@@ -28,5 +29,29 @@ namespace BL.IntegrationTests
 
             Assert.Matches("[0-9]+,[0-9]+", weatherResult);
         }
+
+        [Theory]
+        [InlineData("Tashkent", 2)]
+        [InlineData("Moscow", 3)]
+        public async void GetFutureWeatherByCityNameAsync_WhenCalled_ReturnsTemperatureString(string cityName, int days)
+        {
+            var weatherHttpService = new WeatherHttpClient(apiKey, apiKeySecond);
+            var weatherRepository = new WeatherRepository();
+            var weatherValidatorService = new ValidationService();
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var weatherService = new WeatherService(
+                weatherHttpService,
+                weatherRepository,
+                weatherValidatorService);
+
+            var weatherResult = await weatherService.GetFutureWeatherByCityNameAsync(cityName, days, configuration);
+
+            Assert.Matches("(:.[0-9].[0-9])|(: [0-9].)|(: -[0-9].[0-9])|(: -[0-9].)", weatherResult);
+        }
+
     }
 }

@@ -25,7 +25,7 @@ namespace BL
             if (!validationService.ValidateCityName(cityName) && validationService.ValidateMinMaxDays(days, configuration))
             {
                 WeatherForecast response =
-                    await weatherHttpClient.FetchWeatherListByCoordsAsync(cityName, days);
+                    await weatherHttpClient.FetchFutureWeatherAsync(cityName, days);
                 var dayNumber = 1;
                 var weatherStringResult = "";
 
