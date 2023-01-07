@@ -1,6 +1,7 @@
 ﻿using BL.HttpService;
 using BL.Validation;
 using DAL;
+using Microsoft.Extensions.Configuration;
 
 namespace BL
 {
@@ -19,9 +20,9 @@ namespace BL
             this.validationService = validationService;
         }
 
-        public async Task<string> GetFutureWeatherByCityNameAsync(string cityName, int days)
+        public async Task<string> GetFutureWeatherByCityNameAsync(string cityName, int days, IConfiguration configuration)
         {
-            if (!validationService.ValidateCityName(cityName) && validationService.ValidateMinMaxDays(days))
+            if (!validationService.ValidateCityName(cityName) && validationService.ValidateMinMaxDays(days, configuration))
             {
                 WeatherForecast response =
                     await weatherHttpClient.FetchWeatherListByCoordsAsync(cityName, days);

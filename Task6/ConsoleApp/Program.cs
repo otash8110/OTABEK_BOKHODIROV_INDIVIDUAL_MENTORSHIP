@@ -15,11 +15,13 @@ namespace ConsoleApp
         {
             SetupConfiguration();
 
-            IValidation validation = new ValidationService(configuration);
+            IValidation validation = new ValidationService();
             IWeatherRepository weatherRepository = new WeatherRepository();
             IWeatherHttpClient weatherManager = new WeatherHttpClient(configuration["weather-api-key"],
                 configuration["weather-api-key-secondary"]);
-            IWeatherService weatherService = new WeatherService(weatherManager, weatherRepository, validation);
+            IWeatherService weatherService = new WeatherService(weatherManager,
+                weatherRepository,
+                validation);
 
 
             while(flag)
@@ -28,7 +30,7 @@ namespace ConsoleApp
                 {
                     Console.WriteLine("Enter city name to fetch a weather info:");
                     var cityName = Console.ReadLine();
-                    var weatherResult = await weatherService.GetFutureWeatherByCityNameAsync(cityName, 0);
+                    var weatherResult = await weatherService.GetFutureWeatherByCityNameAsync(cityName, 0, configuration);
 
                     Console.WriteLine(weatherResult);
                 }

@@ -4,18 +4,12 @@ namespace BL.Validation
 {
     public class ValidationService : IValidation
     {
-        private readonly IConfiguration configuration;
-
-        public ValidationService(IConfiguration configuration)
-        {
-            this.configuration = configuration;
-        }
         public bool ValidateCityName(string cityName)
         {
             return String.IsNullOrEmpty(cityName);
         }
 
-        public bool ValidateMinMaxDays(int days)
+        public bool ValidateMinMaxDays(int days, IConfiguration configuration)
         {
             var minDays = Convert.ToInt32(configuration["MinDays"]);
             var maxDays = Convert.ToInt32(configuration["MaxDays"]);
