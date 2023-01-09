@@ -1,6 +1,7 @@
 ﻿using BL;
 using BL.HttpService;
 using BL.Validation;
+using ConsoleApp.Commands;
 using DAL;
 using Microsoft.Extensions.Configuration;
 
@@ -23,16 +24,37 @@ namespace ConsoleApp
                 weatherRepository,
                 validation);
 
+            var todayWeatherCommand = new TodayWeatherCommand(weatherService);
+            var futureWeatherCommand = new FutureWeatherCommand(weatherService, configuration);
+
+
+            var invoker = new Invoker();
+
 
             while(flag)
             {
                 try
                 {
-                    Console.WriteLine("Enter city name to fetch a weather info:");
-                    var cityName = Console.ReadLine();
-                    var weatherResult = await weatherService.GetFutureWeatherByCityNameAsync(cityName, 4, configuration);
+                    Console.WriteLine("1. Current weather\n" +
+                        "2. Weather forecast\n" +
+                        "0. Close application");
+                    var response = Console.ReadLine();
 
-                    Console.WriteLine(weatherResult);
+                    ICommand command = response switch
+                    {
+                        "1" => todayWeatherCommand,
+                        "2" => futureWeatherCommand,
+                        "0" => null,
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+
+                    if (command != null)
+                    {
+                        invoker.SetCommand(command);
+                        await invoker.ExecuteCommand();
+                    }
+                    else 
+                        flag = false;
                 }
                 catch (Exception ex)
                 {
