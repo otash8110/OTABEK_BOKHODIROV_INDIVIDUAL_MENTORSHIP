@@ -1,6 +1,7 @@
 using BL.HttpService;
 using BL.Validation;
 using DAL;
+using Microsoft.Extensions.Configuration;
 using Moq;
 
 namespace BL.Tests
@@ -49,6 +50,44 @@ namespace BL.Tests
             await Assert.ThrowsAsync<ArgumentException>(async () => await weatherService.GetWeatherByCityNameAsync(""));
         }
 
+        [Theory]
+        [InlineData(1)]
+        [InlineData(4)]
+        public async void GetFutureWeatherByCityNameAsync_WhenCalled_ReturnsString(int days)
+        {
+            var mockConfiguration = new Mock<IConfiguration>();
+            mockConfiguration.SetupGet(x => x["MinDays"]).Returns("1");
+            mockConfiguration.SetupGet(x => x["MaxDays"]).Returns("5");
+            var mockHttpClient = new Mock<IWeatherHttpClient>();
+            mockHttpClient.Setup(x => x.FetchFutureWeatherAsync(cityName, days)).Returns(FetchFutureWeather);
+            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation);
+            
+
+            var result = await weatherService.GetFutureWeatherByCityNameAsync(cityName,
+                days,
+                mockConfiguration.Object);
+
+            Assert.IsType<string>(result);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(6)]
+        public async void GetFutureWeatherByCityNameAsync_WrongDayPassed_ThrowsArgumentException(int days)
+        {
+            var mockConfiguration = new Mock<IConfiguration>();
+            mockConfiguration.SetupGet(x => x["MinDays"]).Returns("1");
+            mockConfiguration.SetupGet(x => x["MaxDays"]).Returns("5");
+            var mockHttpClient = new Mock<IWeatherHttpClient>();
+            mockHttpClient.Setup(x => x.FetchFutureWeatherAsync(cityName, days)).Returns(FetchFutureWeather);
+            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation);
+
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await weatherService.GetFutureWeatherByCityNameAsync(cityName,
+                days,
+                mockConfiguration.Object));
+        }
+
         private async Task<Weather> FetchResultString()
         {
             var temperature = new WeatherMain()
@@ -60,6 +99,46 @@ namespace BL.Tests
             {
                 Main = temperature
             });
+        }
+
+        private async Task<WeatherForecast> FetchFutureWeather()
+        {
+            var days = new List<Days>();
+
+            days.Add(new Days() { 
+                Day = new Day()
+                {
+                    Avgtemp_c = 12
+                }
+            });
+
+            days.Add(new Days()
+            {
+                Day = new Day()
+                {
+                    Avgtemp_c = 0
+                }
+            });
+            
+            days.Add(new Days()
+            {
+                Day = new Day()
+                {
+                    Avgtemp_c = -9
+                }
+            });
+
+            var forecastDay = new ForecastDay()
+            {
+                Forecastday = days
+            };
+
+            var forecast = new WeatherForecast()
+            {
+                Forecast = forecastDay
+            };
+
+            return await Task.FromResult(forecast);
         }
     }
 }

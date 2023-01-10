@@ -45,7 +45,7 @@ namespace BL.HttpService
             }
         }
 
-        public async Task<WeatherForecast> FetchWeatherListByCoordsAsync(string cityName, int days)
+        public async Task<WeatherForecast> FetchFutureWeatherAsync(string cityName, int days)
         {
             var fetchURL =
                 $"http://api.weatherapi.com/v1/forecast.json?key={apiKeyWeather}&q={cityName}&days={days}&aqi=no&alerts=no";
