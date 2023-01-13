@@ -50,6 +50,41 @@ namespace BL
                 throw new ArgumentException("City name is empty or null or days number is inaccurate");
         }
 
+        public async Task<string> GetManyWeatherByCityNamesAsync(string[] cityNames, IConfiguration configuration)
+        {
+            Weather maxTemperatureWeather = new Weather();
+            string stringResult = "";
+            var weatherTasks = new List<Task<Weather>>();
+            foreach (var cityName in cityNames)
+            {
+                var fetchWeatherTask = weatherHttpClient.FetchWeatherByCityNameAsync(cityName);
+                weatherTasks.Add(fetchWeatherTask);
+            }
+
+            await Task.WhenAll(weatherTasks);
+
+            for (int i = 0; i < weatherTasks.Count; i++)
+            {
+                var result = await weatherTasks[i];
+                if (result == null)
+                {
+                    throw new Exception("Could not fetch weather information");
+                }
+
+                if (maxTemperatureWeather.Main is null || result.Main.Temp > maxTemperatureWeather.Main.Temp)
+                {
+                    maxTemperatureWeather = result;
+                }
+
+                stringResult += $"City: {result.CityName} :{result.Main.Temp}. Timer: ms\n";
+            }
+
+            stringResult += $"\nCity with the highest temperature {maxTemperatureWeather.Main.Temp} C: {maxTemperatureWeather.CityName}. " +
+                $"Successful request count: {1}, failed: {1}.";
+
+            return stringResult;
+        }
+
         public async Task<string> GetWeatherByCityNameAsync(string cityName)
         {
             if (!validationService.ValidateCityName(cityName))

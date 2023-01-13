@@ -6,5 +6,6 @@ namespace BL
     {
         Task<string> GetWeatherByCityNameAsync(string cityName);
         Task<string> GetFutureWeatherByCityNameAsync(string cityName, int days, IConfiguration configuration);
+        Task<string> GetManyWeatherByCityNamesAsync(string[] cityNames, IConfiguration configuration);
     }
 }

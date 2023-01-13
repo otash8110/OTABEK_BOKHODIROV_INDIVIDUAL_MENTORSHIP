@@ -26,6 +26,7 @@ namespace ConsoleApp
 
             var todayWeatherCommand = new TodayWeatherCommand(weatherService);
             var futureWeatherCommand = new FutureWeatherCommand(weatherService, configuration);
+            var maxTemperatureWeatherCommand = new MaxTemperatureWeatherCommand(weatherService, configuration);
 
 
             var invoker = new Invoker();
@@ -37,6 +38,7 @@ namespace ConsoleApp
                 {
                     Console.WriteLine("1. Current weather\n" +
                         "2. Weather forecast\n" +
+                        "3. Max weather\n" +
                         "0. Close application");
                     var response = Console.ReadLine();
 
@@ -44,6 +46,7 @@ namespace ConsoleApp
                     {
                         "1" => todayWeatherCommand,
                         "2" => futureWeatherCommand,
+                        "3" => maxTemperatureWeatherCommand,
                         "0" => null,
                         _ => throw new ArgumentOutOfRangeException()
                     };

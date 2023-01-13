@@ -4,6 +4,7 @@
     {
         public WeatherCoord Coord { get; set; }
         public WeatherMain Main { get; set; }
+        public string CityName { get; set; }
     }
 
     public class WeatherCoord
@@ -15,6 +16,6 @@
 
     public class WeatherMain
     {
-        public float Temp { get; set; }
+        public float Temp { get; set; } = float.MinValue;
     }
 }

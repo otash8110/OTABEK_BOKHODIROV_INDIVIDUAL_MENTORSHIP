@@ -1,5 +1,6 @@
 ﻿using BL;
 using Microsoft.Extensions.Configuration;
+using System.Text.RegularExpressions;
 
 namespace ConsoleApp.Commands
 {
@@ -18,10 +19,10 @@ namespace ConsoleApp.Commands
         {
             Console.WriteLine("Enter city names separated with comma to fetch a weather info:");
             var cityNames = Console.ReadLine();
-            var splitedCityNames = cityNames.Split(",", StringSplitOptions.RemoveEmptyEntries);
-            //var weatherResult = await 
+            var splitedCityNames = Regex.Split(cityNames, ", +");
+            var weatherResult = await weatherService.GetManyWeatherByCityNamesAsync(splitedCityNames, configuration);
 
-            //Console.WriteLine(weatherResult);
+            Console.WriteLine(weatherResult);
             Console.WriteLine();
         }
     }
