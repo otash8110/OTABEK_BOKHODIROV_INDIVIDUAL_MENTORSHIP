@@ -2,6 +2,7 @@
 using BL.Validation;
 using DAL;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
 
 namespace BL
 {
@@ -52,12 +53,13 @@ namespace BL
 
         public async Task<string> GetManyWeatherByCityNamesAsync(string[] cityNames, IConfiguration configuration)
         {
-            Weather maxTemperatureWeather = new Weather();
+            var maxTemperatureWeather = new WeatherAsyncResult();
             string stringResult = "";
-            var weatherTasks = new List<Task<Weather>>();
+            var weatherTasks = new List<Task<WeatherAsyncResult>>();
+
             foreach (var cityName in cityNames)
             {
-                var fetchWeatherTask = weatherHttpClient.FetchWeatherByCityNameAsync(cityName);
+                var fetchWeatherTask = GetWeatherWithOperationResultAsync(cityName);
                 weatherTasks.Add(fetchWeatherTask);
             }
 
@@ -66,20 +68,21 @@ namespace BL
             for (int i = 0; i < weatherTasks.Count; i++)
             {
                 var result = await weatherTasks[i];
-                if (result == null)
+                if (result.Weather == null)
                 {
-                    throw new Exception("Could not fetch weather information");
+                    stringResult += $"City: {result.CityName}. Error: {result.Error}. Timer: {result.Time} ms\n";
+                    continue;
                 }
 
-                if (maxTemperatureWeather.Main is null || result.Main.Temp > maxTemperatureWeather.Main.Temp)
+                if (maxTemperatureWeather.Weather is null || result.Weather.Main.Temp > maxTemperatureWeather.Weather.Main.Temp)
                 {
                     maxTemperatureWeather = result;
                 }
 
-                stringResult += $"City: {result.CityName} :{result.Main.Temp}. Timer: ms\n";
+                stringResult += $"City: {result.CityName} : {result.Weather.Main.Temp}. Timer: {result.Time} ms\n";
             }
 
-            stringResult += $"\nCity with the highest temperature {maxTemperatureWeather.Main.Temp} C: {maxTemperatureWeather.CityName}. " +
+            stringResult += $"\nCity with the highest temperature {maxTemperatureWeather.Weather.Main.Temp} C: {maxTemperatureWeather.CityName}. " +
                 $"Successful request count: {1}, failed: {1}.";
 
             return stringResult;
@@ -115,6 +118,31 @@ namespace BL
                 >= 30 => "it's time to go to the beach.",
                 _ => throw new ArgumentOutOfRangeException(nameof(value), $"Unexpected temperature value")
             };
+        }
+
+        private async Task<WeatherAsyncResult> GetWeatherWithOperationResultAsync(string cityName)
+        {
+            var result = new WeatherAsyncResult();
+            result.CityName = cityName;
+
+            var watch = new Stopwatch();
+            watch.Start();
+
+            try
+            {
+                result.Weather = await weatherHttpClient.FetchWeatherByCityNameAsync(cityName);
+            }
+            catch (Exception ex)
+            {
+                result.Error = ex.Message;
+            }
+            finally
+            {
+                watch.Stop();
+                result.Time = watch.ElapsedMilliseconds;
+            }
+
+            return result;
         }
     }
 }
