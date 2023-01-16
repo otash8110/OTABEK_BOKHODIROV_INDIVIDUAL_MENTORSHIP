@@ -56,6 +56,8 @@ namespace BL
             var maxTemperatureWeather = new WeatherAsyncResult();
             string stringResult = "";
             var weatherTasks = new List<Task<WeatherAsyncResult>>();
+            var successTasks = 0;
+            var failTasks = 0;
 
             foreach (var cityName in cityNames)
             {
@@ -70,6 +72,7 @@ namespace BL
                 var result = await weatherTasks[i];
                 if (result.Weather == null)
                 {
+                    failTasks++;
                     stringResult += $"City: {result.CityName}. Error: {result.Error}. Timer: {result.Time} ms\n";
                     continue;
                 }
@@ -78,12 +81,12 @@ namespace BL
                 {
                     maxTemperatureWeather = result;
                 }
-
+                successTasks++;
                 stringResult += $"City: {result.CityName} : {result.Weather.Main.Temp}. Timer: {result.Time} ms\n";
             }
 
             stringResult += $"\nCity with the highest temperature {maxTemperatureWeather.Weather.Main.Temp} C: {maxTemperatureWeather.CityName}. " +
-                $"Successful request count: {1}, failed: {1}.";
+                $"Successful request count: {successTasks}, failed: {failTasks}.";
 
             return stringResult;
         }
