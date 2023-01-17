@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace BL
 {
-    public class WeatherService: IWeatherService
+    public class WeatherService : IWeatherService
     {
         private readonly IWeatherHttpClient weatherHttpClient;
         private readonly IWeatherRepository weatherRepository;
@@ -53,6 +53,8 @@ namespace BL
 
         public async Task<string> GetManyWeatherByCityNamesAsync(string[] cityNames, IConfiguration configuration)
         {
+            bool isDebugShown;
+            bool.TryParse(configuration["IncludeDebugInfo"], out isDebugShown);
             var maxTemperatureWeather = new WeatherAsyncResult();
             string stringResult = "";
             var weatherTasks = new List<Task<WeatherAsyncResult>>();
@@ -70,19 +72,28 @@ namespace BL
             for (int i = 0; i < weatherTasks.Count; i++)
             {
                 var result = await weatherTasks[i];
+
+
                 if (result.Weather == null)
                 {
                     failTasks++;
-                    stringResult += $"City: {result.CityName}. Error: {result.Error}. Timer: {result.Time} ms\n";
+                    if (isDebugShown)
+                    {
+                        stringResult += $"City: {result.CityName}. Error: {result.Error}. Timer: {result.Time} ms\n";
+                    }
                     continue;
                 }
+
+                if (isDebugShown)
+                {
+                    stringResult += $"City: {result.CityName} : {result.Weather.Main.Temp}. Timer: {result.Time} ms\n";
+                }
+                successTasks++;
 
                 if (maxTemperatureWeather.Weather is null || result.Weather.Main.Temp > maxTemperatureWeather.Weather.Main.Temp)
                 {
                     maxTemperatureWeather = result;
                 }
-                successTasks++;
-                stringResult += $"City: {result.CityName} : {result.Weather.Main.Temp}. Timer: {result.Time} ms\n";
             }
 
             stringResult += $"\nCity with the highest temperature {maxTemperatureWeather.Weather.Main.Temp} C: {maxTemperatureWeather.CityName}. " +
@@ -104,7 +115,7 @@ namespace BL
                     return $"In {cityName} {response.Main.Temp} °C. {temperatureComment}";
                 }
 
-                else 
+                else
                     throw new Exception("Could not fetch weather information");
             }
             else
