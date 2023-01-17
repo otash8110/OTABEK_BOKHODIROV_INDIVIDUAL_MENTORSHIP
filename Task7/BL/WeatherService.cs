@@ -51,7 +51,7 @@ namespace BL
                 throw new ArgumentException("City name is empty or null or days number is inaccurate");
         }
 
-        public async Task<string> GetManyWeatherByCityNamesAsync(string[] cityNames, IConfiguration configuration)
+        public async Task<string> GetMaxWeatherByCityNamesAsync(string[] cityNames, IConfiguration configuration)
         {
             bool isDebugShown;
             bool.TryParse(configuration["IncludeDebugInfo"], out isDebugShown);
@@ -96,8 +96,15 @@ namespace BL
                 }
             }
 
-            stringResult += $"\nCity with the highest temperature {maxTemperatureWeather.Weather.Main.Temp} C: {maxTemperatureWeather.CityName}. " +
-                $"Successful request count: {successTasks}, failed: {failTasks}.";
+            if (maxTemperatureWeather.Weather is not null && successTasks == 0)
+            {
+                stringResult += $"\nCity with the highest temperature {maxTemperatureWeather.Weather.Main.Temp} C: {maxTemperatureWeather.CityName}. " +
+                    $"Successful request count: {successTasks}, failed: {failTasks}.";
+            }
+            else
+            {
+                stringResult += $"Error, no successful requests. Failed requests count: {failTasks}.";
+            }
 
             return stringResult;
         }
@@ -144,6 +151,8 @@ namespace BL
 
             try
             {
+                if (string.IsNullOrWhiteSpace(cityName))
+                    throw new ArgumentException("City name is empty");
                 result.Weather = await weatherHttpClient.FetchWeatherByCityNameAsync(cityName);
             }
             catch (Exception ex)
