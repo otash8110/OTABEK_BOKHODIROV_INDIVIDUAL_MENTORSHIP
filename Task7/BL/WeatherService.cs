@@ -96,7 +96,7 @@ namespace BL
                 }
             }
 
-            if (maxTemperatureWeather.Weather is not null && successTasks == 0)
+            if (maxTemperatureWeather.Weather is not null && successTasks > 0)
             {
                 stringResult += $"\nCity with the highest temperature {maxTemperatureWeather.Weather.Main.Temp} C: {maxTemperatureWeather.CityName}. " +
                     $"Successful request count: {successTasks}, failed: {failTasks}.";

@@ -53,5 +53,29 @@ namespace BL.IntegrationTests
             Assert.Matches("(:.[0-9].[0-9])|(: [0-9].)|(: -[0-9].[0-9])|(: -[0-9].)", weatherResult);
         }
 
+        [Theory]
+        [InlineData("Moscow", "Tashkent")]
+        [InlineData("Moscow", "Tashkent", "Ohio")]
+        public async void GetMaxWeatherByCityNamesAsync_WhenCalled_ReturnsMaxTemperatureStringWithDebug(params string[] cityNames)
+        {
+            var weatherHttpService = new WeatherHttpClient(apiKey, apiKeySecond);
+            var weatherRepository = new WeatherRepository();
+            var weatherValidatorService = new ValidationService();
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var weatherService = new WeatherService(
+                weatherHttpService,
+                weatherRepository,
+                weatherValidatorService);
+
+            var weatherResult = await weatherService.GetMaxWeatherByCityNamesAsync(cityNames, configuration);
+
+            Assert.Matches("City: [A-z]+ : (([-0-9]+,[0-9]+)|([0-9])+). Timer: [0-9]+ ms", weatherResult);
+            Assert.Matches("City with the highest temperature (([-0-9]+,[0-9]+)|([0-9]+)) C: [A-z]+. Successful request count: [0-9]+, failed: [0-9]+.", weatherResult);
+        }
+
     }
 }
