@@ -7,5 +7,6 @@ namespace DAL
         public long Time { get; set; }
         public string Error { get; set; }
         public string CityName { get; set; }
+        public bool IsCancelled { get; set; } = false;
     }
 }

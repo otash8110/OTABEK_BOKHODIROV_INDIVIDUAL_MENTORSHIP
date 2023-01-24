@@ -53,17 +53,21 @@ namespace BL
 
         public async Task<string> GetMaxWeatherByCityNamesAsync(string[] cityNames, IConfiguration configuration)
         {
-            bool isDebugShown;
-            bool.TryParse(configuration["IncludeDebugInfo"], out isDebugShown);
+            bool.TryParse(configuration["IncludeDebugInfo"], out bool isDebugShown);
+            var cancellationDelay = Convert.ToInt32(configuration["cancellDelay"]);
             var maxTemperatureWeather = new WeatherAsyncResult();
             string stringResult = "";
             var weatherTasks = new List<Task<WeatherAsyncResult>>();
             var successTasks = 0;
             var failTasks = 0;
+            var cancelledTasks = 0;
+
+            var cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(cancellationDelay);
 
             foreach (var cityName in cityNames)
             {
-                var fetchWeatherTask = GetWeatherWithOperationResultAsync(cityName);
+                var fetchWeatherTask = GetWeatherWithOperationResultAsync(cityName, cancellationTokenSource.Token);
                 weatherTasks.Add(fetchWeatherTask);
             }
 
@@ -73,37 +77,44 @@ namespace BL
             {
                 var result = await weatherTasks[i];
 
-
-                if (result.Weather == null)
+                if (result.IsCancelled)
                 {
-                    failTasks++;
+                    cancelledTasks++;
+                    stringResult += $"Weather request for {result.CityName} was canceled due to a timeout.\n";
+                }
+                else
+                {
+                    if (result.Weather == null)
+                    {
+                        failTasks++;
+                        if (isDebugShown)
+                        {
+                            stringResult += $"City: {result.CityName}. Error: {result.Error}. Timer: {result.Time} ms\n";
+                        }
+                        continue;
+                    }
+
                     if (isDebugShown)
                     {
-                        stringResult += $"City: {result.CityName}. Error: {result.Error}. Timer: {result.Time} ms\n";
+                        stringResult += $"City: {result.CityName} : {result.Weather.Main.Temp}. Timer: {result.Time} ms\n";
                     }
-                    continue;
-                }
+                    successTasks++;
 
-                if (isDebugShown)
-                {
-                    stringResult += $"City: {result.CityName} : {result.Weather.Main.Temp}. Timer: {result.Time} ms\n";
-                }
-                successTasks++;
-
-                if (maxTemperatureWeather.Weather is null || result.Weather.Main.Temp > maxTemperatureWeather.Weather.Main.Temp)
-                {
-                    maxTemperatureWeather = result;
+                    if (maxTemperatureWeather.Weather is null || result.Weather.Main.Temp > maxTemperatureWeather.Weather.Main.Temp)
+                    {
+                        maxTemperatureWeather = result;
+                    }
                 }
             }
 
             if (maxTemperatureWeather.Weather is not null && successTasks > 0)
             {
                 stringResult += $"\nCity with the highest temperature {maxTemperatureWeather.Weather.Main.Temp} C: {maxTemperatureWeather.CityName}. " +
-                    $"Successful request count: {successTasks}, failed: {failTasks}.";
+                    $"Successful request count: {successTasks}, failed: {failTasks}, canceled: {cancelledTasks}";
             }
             else
             {
-                stringResult += $"Error, no successful requests. Failed requests count: {failTasks}.";
+                stringResult += $"Error, no successful requests. Failed requests count: {failTasks}, canceled: {cancelledTasks}";
             }
 
             return stringResult;
@@ -113,7 +124,9 @@ namespace BL
         {
             if (!validationService.ValidateCityName(cityName))
             {
-                Weather response = await weatherHttpClient.FetchWeatherByCityNameAsync(cityName);
+                var cancellationTokenSource = new CancellationTokenSource();
+
+                Weather response = await weatherHttpClient.FetchWeatherByCityNameAsync(cityName, cancellationTokenSource.Token);
                 if (response != null)
                 {
                     weatherRepository.Insert(response);
@@ -141,7 +154,7 @@ namespace BL
             };
         }
 
-        private async Task<WeatherAsyncResult> GetWeatherWithOperationResultAsync(string cityName)
+        private async Task<WeatherAsyncResult> GetWeatherWithOperationResultAsync(string cityName, CancellationToken cancellationToken)
         {
             var result = new WeatherAsyncResult();
             result.CityName = cityName;
@@ -153,7 +166,11 @@ namespace BL
             {
                 if (string.IsNullOrWhiteSpace(cityName))
                     throw new ArgumentException("City name is empty");
-                result.Weather = await weatherHttpClient.FetchWeatherByCityNameAsync(cityName);
+                result.Weather = await weatherHttpClient.FetchWeatherByCityNameAsync(cityName, cancellationToken);
+            }
+            catch(OperationCanceledException ex)
+            {
+                result.IsCancelled = true;
             }
             catch (Exception ex)
             {

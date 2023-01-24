@@ -16,14 +16,14 @@ namespace BL.HttpService
             this.apiKeyWeather = apiKeyWeather;
         }
 
-        public async Task<Weather> FetchWeatherByCityNameAsync(string cityName)
+        public async Task<Weather> FetchWeatherByCityNameAsync(string cityName, CancellationToken cancellationToken)
         {
             var fetchURL = $"{weatherEndpointURL}/weather?q={cityName}&appid={apiKey}&units=metric";
 
             try
             {
                 using HttpClient client = new HttpClient();
-                using HttpResponseMessage res = await client.GetAsync(fetchURL);
+                using HttpResponseMessage res = await client.GetAsync(fetchURL, cancellationToken);
                 using HttpContent content = res.Content;
 
                 string data = await content.ReadAsStringAsync();
