@@ -6,13 +6,11 @@ namespace ConsoleApp.Commands
 {
     public class MaxTemperatureWeatherCommand : ICommand
     {
-        private readonly IConfiguration configuration;
         private readonly IWeatherService weatherService;
-        public MaxTemperatureWeatherCommand(IWeatherService weatherService,
-            IConfiguration configuration)
+
+        public MaxTemperatureWeatherCommand(IWeatherService weatherService)
         {
             this.weatherService = weatherService;
-            this.configuration = configuration;
         }
 
         public async Task Execute()
@@ -20,7 +18,7 @@ namespace ConsoleApp.Commands
             Console.WriteLine("Enter city names separated with comma to fetch a weather info:");
             var cityNames = Console.ReadLine();
             var splitedCityNames = Regex.Split(cityNames, ", +");
-            var weatherResult = await weatherService.GetMaxWeatherByCityNamesAsync(splitedCityNames, configuration);
+            var weatherResult = await weatherService.GetMaxWeatherByCityNamesAsync(splitedCityNames);
 
             Console.WriteLine(weatherResult);
             Console.WriteLine();

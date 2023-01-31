@@ -18,15 +18,15 @@ namespace ConsoleApp
 
             IValidation validation = new ValidationService();
             IWeatherRepository weatherRepository = new WeatherRepository();
-            IWeatherHttpClient weatherManager = new WeatherHttpClient(configuration["weather-api-key"],
-                configuration["weather-api-key-secondary"]);
+            IWeatherHttpClient weatherManager = new WeatherHttpClient(configuration);
             IWeatherService weatherService = new WeatherService(weatherManager,
                 weatherRepository,
-                validation);
+                validation,
+                configuration);
 
             var todayWeatherCommand = new TodayWeatherCommand(weatherService);
-            var futureWeatherCommand = new FutureWeatherCommand(weatherService, configuration);
-            var maxTemperatureWeatherCommand = new MaxTemperatureWeatherCommand(weatherService, configuration);
+            var futureWeatherCommand = new FutureWeatherCommand(weatherService);
+            var maxTemperatureWeatherCommand = new MaxTemperatureWeatherCommand(weatherService);
 
             while(flag)
             {

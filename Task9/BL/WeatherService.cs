@@ -11,17 +11,20 @@ namespace BL
         private readonly IWeatherHttpClient weatherHttpClient;
         private readonly IWeatherRepository weatherRepository;
         private readonly IValidation validationService;
+        private readonly IConfiguration configuration;
 
         public WeatherService(IWeatherHttpClient weatherHttpClient,
             IWeatherRepository weatherRepository,
-            IValidation validationService)
+            IValidation validationService,
+            IConfiguration configuration)
         {
             this.weatherHttpClient = weatherHttpClient;
             this.weatherRepository = weatherRepository;
             this.validationService = validationService;
+            this.configuration = configuration;
         }
 
-        public async Task<string> GetFutureWeatherByCityNameAsync(string cityName, int days, IConfiguration configuration)
+        public async Task<string> GetFutureWeatherByCityNameAsync(string cityName, int days)
         {
             if (!validationService.ValidateCityName(cityName) && validationService.ValidateMinMaxDays(days, configuration))
             {
@@ -51,7 +54,7 @@ namespace BL
                 throw new ArgumentException("City name is empty or null or days number is inaccurate");
         }
 
-        public async Task<string> GetMaxWeatherByCityNamesAsync(string[] cityNames, IConfiguration configuration)
+        public async Task<string> GetMaxWeatherByCityNamesAsync(string[] cityNames)
         {
             bool.TryParse(configuration["IncludeDebugInfo"], out bool isDebugShown);
             var cancellationDelay = Convert.ToInt32(configuration["cancellDelay"]);

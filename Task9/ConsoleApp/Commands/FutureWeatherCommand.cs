@@ -6,12 +6,9 @@ namespace ConsoleApp.Commands
     internal class FutureWeatherCommand : ICommand
     {
         private readonly IWeatherService weatherService;
-        private readonly IConfiguration configuration;
-        public FutureWeatherCommand(IWeatherService weatherService,
-            IConfiguration configuration)
+        public FutureWeatherCommand(IWeatherService weatherService)
         {
             this.weatherService = weatherService;
-            this.configuration = configuration;
         }
         public async Task Execute()
         {
@@ -21,8 +18,7 @@ namespace ConsoleApp.Commands
             var days = Convert.ToInt32(Console.ReadLine());
 
             var weatherResult = await weatherService.GetFutureWeatherByCityNameAsync(cityName,
-                days,
-                configuration);
+                days);
 
             Console.WriteLine(weatherResult);
             Console.WriteLine();

@@ -1,4 +1,5 @@
 ﻿using DAL;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Net;
 
@@ -10,10 +11,10 @@ namespace BL.HttpService
         private string apiKey;
         private readonly string apiKeyWeather;
 
-        public WeatherHttpClient(string apiKey, string apiKeyWeather)
+        public WeatherHttpClient(IConfiguration configuration)
         {
-            this.apiKey = apiKey;
-            this.apiKeyWeather = apiKeyWeather;
+            apiKey = configuration["weather-api-key"];
+            apiKeyWeather = configuration["weather-api-key-secondary"];
         }
 
         public async Task<Weather> FetchWeatherByCityNameAsync(string cityName, CancellationToken cancellationToken)
