@@ -6,7 +6,7 @@ namespace API
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection ConfigureApiServices(this IServiceCollection services)
+        public static IServiceCollection AddApiServices(this IServiceCollection services)
         {
             services.AddScoped<IWeatherHttpClient, WeatherHttpClient>();
             services.AddScoped<IWeatherRepository, WeatherRepository>();
