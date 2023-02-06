@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DAL.WeatherHistoryEntity;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Persistent
 {
@@ -7,5 +8,7 @@ namespace DAL.Persistent
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
+
+        public DbSet<WeatherHistory> WeatherHistory { get; set; }
     }
 }
