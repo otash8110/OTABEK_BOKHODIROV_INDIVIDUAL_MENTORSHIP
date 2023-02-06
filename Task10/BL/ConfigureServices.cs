@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BL.SchedulerManager;
+using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 
 namespace BL
@@ -16,6 +17,8 @@ namespace BL
             {
                 options.WaitForJobsToComplete = true;
             });
+
+            services.AddHostedService<ScheduleManager>();
 
             return services;
         }

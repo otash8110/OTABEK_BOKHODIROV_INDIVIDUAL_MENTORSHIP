@@ -15,9 +15,10 @@ namespace BL
             this.weatherHttpClient = weatherHttpClient;
         }
 
-        public async Task FetchAndSaveWeatherAsync(string cityName, CancellationToken cancellationToken)
+        public async Task FetchAndSaveWeatherAsync(string cityName)
         {
-            var fetchWeather = await weatherHttpClient.FetchWeatherByCityNameAsync(cityName, cancellationToken);
+            var fetchWeather = await weatherHttpClient.FetchWeatherByCityNameAsync(cityName, CancellationToken.None);
+
             var weather = new WeatherHistory()
             {
                 Temperature = fetchWeather.Main.Temp,

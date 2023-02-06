@@ -1,3 +1,4 @@
+using BL;
 using DAL;
 
 namespace API
@@ -11,6 +12,7 @@ namespace API
             // Add services to the container.
             builder.Services.AddApiServices(builder.Configuration);
             builder.Services.AddDALServices(builder.Configuration);
+            builder.Services.AddBLServices();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

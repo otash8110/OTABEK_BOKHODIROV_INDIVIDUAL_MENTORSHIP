@@ -2,6 +2,6 @@
 {
     public interface IWeatherScheduledService
     {
-        Task FetchAndSaveWeatherAsync(string cityName, CancellationToken cancellationToken);
+        Task FetchAndSaveWeatherAsync(string cityName);
     }
 }
