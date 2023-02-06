@@ -9,15 +9,15 @@ namespace DAL.WeatherHistoryEntity
         {
             this.context = context;
         }
-        public void Insert(WeatherHistory weatherHistory)
+        public async Task Insert(WeatherHistory weatherHistory)
         {
-            context.Set<WeatherHistory>().Add(weatherHistory);
+            await context.Set<WeatherHistory>().AddAsync(weatherHistory);
             context.SaveChanges();
         }
 
-        public void InsertMany(IEnumerable<WeatherHistory> weatherHistoryList)
+        public async Task InsertMany(IEnumerable<WeatherHistory> weatherHistoryList)
         {
-            context.Set<WeatherHistory>().AddRange(weatherHistoryList);
+            await context.Set<WeatherHistory>().AddRangeAsync(weatherHistoryList);
             context.SaveChanges();
         }
     }

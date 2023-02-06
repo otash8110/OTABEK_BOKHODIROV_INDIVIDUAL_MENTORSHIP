@@ -2,7 +2,7 @@
 {
     public interface IWeatherHistoryRepository
     {
-        void Insert(WeatherHistory weatherHistory);
-        void InsertMany(IEnumerable<WeatherHistory> weatherHistoryList);
+        Task Insert(WeatherHistory weatherHistory);
+        Task InsertMany(IEnumerable<WeatherHistory> weatherHistoryList);
     }
 }
