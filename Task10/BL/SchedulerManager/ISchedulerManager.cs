@@ -2,6 +2,6 @@
 {
     public interface ISchedulerManager
     {
-        public Task ScheduleJobs();
+        public Task ScheduleJobs(bool isReschedule);
     }
 }

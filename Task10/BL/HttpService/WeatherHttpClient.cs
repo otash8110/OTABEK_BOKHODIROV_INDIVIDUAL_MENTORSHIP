@@ -34,7 +34,7 @@ namespace BL.HttpService
                     var dataObject = JObject.Parse(data);
 
                     var objectDeserialized = dataObject.ToObject<Weather>();
-
+                    objectDeserialized.Name = cityName;
                     return objectDeserialized;
                 }
 

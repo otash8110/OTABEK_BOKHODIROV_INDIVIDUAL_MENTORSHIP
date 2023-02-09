@@ -17,6 +17,8 @@ namespace BL.QuartzJobs
 
             string jobSays = dataMap.GetString("cityName");
 
+            System.Diagnostics.Debug.WriteLine($"EXECUTED JOB, {context.FireTimeUtc}, {jobSays}");
+
             await weatherService.FetchAndSaveWeatherAsync(jobSays);
         }
     }

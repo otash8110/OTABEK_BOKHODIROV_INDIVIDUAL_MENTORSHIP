@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using DAL.WeatherHistoryEntity;
 
 namespace DAL
 {
@@ -14,6 +15,8 @@ namespace DAL
                 options.UseSqlServer(configuration.GetConnectionString("Default"),
                     builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
             });
+
+            services.AddScoped<IWeatherHistoryRepository, WeatherHistoryRepository>();
 
             return services;
         }

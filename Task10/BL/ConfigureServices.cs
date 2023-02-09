@@ -1,4 +1,5 @@
-﻿using BL.SchedulerManager;
+﻿using BL.QuartzJobs;
+using BL.SchedulerManager;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 
@@ -8,9 +9,11 @@ namespace BL
     {
         public static IServiceCollection AddBLServices(this IServiceCollection services)
         {
+
             services.AddQuartz(q =>
             {
                 q.UseMicrosoftDependencyInjectionJobFactory();
+
             });
 
             services.AddQuartzHostedService(options =>
@@ -18,6 +21,7 @@ namespace BL
                 options.WaitForJobsToComplete = true;
             });
 
+            services.AddScoped<IWeatherScheduledService, WeatherSchedulerService>();
             services.AddHostedService<ScheduleManager>();
 
             return services;

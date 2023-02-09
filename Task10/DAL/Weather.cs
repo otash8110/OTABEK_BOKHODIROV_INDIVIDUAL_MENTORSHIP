@@ -2,6 +2,7 @@
 {
     public class Weather
     {
+        public string Name { get; set; }
         public WeatherCoord Coord { get; set; }
         public WeatherMain Main { get; set; }
     }

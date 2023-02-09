@@ -17,7 +17,7 @@ namespace BL.Tests
         {
             httpClientMock = new Mock<IWeatherHttpClient>();
             weatherRepositoryMock = new Mock<IWeatherRepository>();
-            httpClientMock.Setup(x => x.FetchWeatherByCityNameAsync(cityName)).Returns(FetchResultString);
+            httpClientMock.Setup(x => x.FetchWeatherByCityNameAsync(cityName, CancellationToken.None)).Returns(FetchResultString);
 
             validation = new ValidationService();
         }
@@ -25,7 +25,8 @@ namespace BL.Tests
         [Fact]
         public async void GetWeatherByCityNameAsync_WhenCalled_ReturnsString()
         {
-            var weatherService = new WeatherService(httpClientMock.Object, weatherRepositoryMock.Object, validation);
+            var mockConfiguration = new Mock<IConfiguration>();
+            var weatherService = new WeatherService(httpClientMock.Object, weatherRepositoryMock.Object, validation, mockConfiguration.Object);
 
             var result = await weatherService.GetWeatherByCityNameAsync(cityName);
 
@@ -35,7 +36,8 @@ namespace BL.Tests
         [Fact]
         public async void GetWeatherByCityNameAsync_NullPassed_ReturnsArgumentException()
         {
-            var weatherService = new WeatherService(httpClientMock.Object, weatherRepositoryMock.Object, validation);
+            var mockConfiguration = new Mock<IConfiguration>();
+            var weatherService = new WeatherService(httpClientMock.Object, weatherRepositoryMock.Object, validation, mockConfiguration.Object);
 
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await weatherService.GetWeatherByCityNameAsync(null));
@@ -44,7 +46,8 @@ namespace BL.Tests
         [Fact]
         public async void GetWeatherByCityNameAsync_EmptyStringPassed_ReturnsArgumentException()
         {
-            var weatherService = new WeatherService(httpClientMock.Object, weatherRepositoryMock.Object, validation);
+            var mockConfiguration = new Mock<IConfiguration>();
+            var weatherService = new WeatherService(httpClientMock.Object, weatherRepositoryMock.Object, validation, mockConfiguration.Object);
 
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await weatherService.GetWeatherByCityNameAsync(""));
@@ -60,12 +63,11 @@ namespace BL.Tests
             mockConfiguration.SetupGet(x => x["MaxDays"]).Returns("5");
             var mockHttpClient = new Mock<IWeatherHttpClient>();
             mockHttpClient.Setup(x => x.FetchFutureWeatherAsync(cityName, days)).Returns(FetchFutureWeather);
-            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation);
+            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation, mockConfiguration.Object);
             
 
             var result = await weatherService.GetFutureWeatherByCityNameAsync(cityName,
-                days,
-                mockConfiguration.Object);
+                days);
 
             Assert.IsType<string>(result);
         }
@@ -80,12 +82,11 @@ namespace BL.Tests
             mockConfiguration.SetupGet(x => x["MaxDays"]).Returns("5");
             var mockHttpClient = new Mock<IWeatherHttpClient>();
             mockHttpClient.Setup(x => x.FetchFutureWeatherAsync(cityName, days)).Returns(FetchFutureWeather);
-            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation);
+            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation, mockConfiguration.Object);
 
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await weatherService.GetFutureWeatherByCityNameAsync(cityName,
-                days,
-                mockConfiguration.Object));
+                days));
         }
 
         [Theory]
@@ -96,10 +97,10 @@ namespace BL.Tests
             var mockConfiguration = new Mock<IConfiguration>();
             mockConfiguration.SetupGet(x => x["IncludeDebugInfo"]).Returns("true");
             var mockHttpClient = new Mock<IWeatherHttpClient>();
-            mockHttpClient.Setup(x => x.FetchWeatherByCityNameAsync(It.IsAny<string>())).Returns(FetchResultString);
-            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation);
+            mockHttpClient.Setup(x => x.FetchWeatherByCityNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(FetchResultString);
+            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation, mockConfiguration.Object);
 
-            var weatherResult = await weatherService.GetMaxWeatherByCityNamesAsync(cityNames, mockConfiguration.Object);
+            var weatherResult = await weatherService.GetMaxWeatherByCityNamesAsync(cityNames);
 
             Assert.Matches("City: [A-z]+ : (([-0-9]+,[0-9]+)|([0-9])+). Timer: [0-9]+ ms", weatherResult);
             Assert.Matches("City with the highest temperature (([-0-9]+,[0-9]+)|([0-9]+)) C: [A-z]+. Successful request count: [0-9]+, failed: [0-9]+.", weatherResult);
@@ -112,10 +113,10 @@ namespace BL.Tests
             var mockConfiguration = new Mock<IConfiguration>();
             mockConfiguration.SetupGet(x => x["IncludeDebugInfo"]).Returns("true");
             var mockHttpClient = new Mock<IWeatherHttpClient>();
-            mockHttpClient.Setup(x => x.FetchWeatherByCityNameAsync(It.IsAny<string>())).Returns(FetchResultString);
-            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation);
+            mockHttpClient.Setup(x => x.FetchWeatherByCityNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(FetchResultString);
+            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation, mockConfiguration.Object);
 
-            var weatherResult = await weatherService.GetMaxWeatherByCityNamesAsync(cityNames, mockConfiguration.Object);
+            var weatherResult = await weatherService.GetMaxWeatherByCityNamesAsync(cityNames);
 
             Assert.Matches("Error, no successful requests. Failed requests count: [0-9]+.", weatherResult);
         }
@@ -127,10 +128,10 @@ namespace BL.Tests
             var mockConfiguration = new Mock<IConfiguration>();
             mockConfiguration.SetupGet(x => x["IncludeDebugInfo"]).Returns("true");
             var mockHttpClient = new Mock<IWeatherHttpClient>();
-            mockHttpClient.Setup(x => x.FetchWeatherByCityNameAsync(It.IsAny<string>())).Throws(new Exception("City not found"));
-            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation);
+            mockHttpClient.Setup(x => x.FetchWeatherByCityNameAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).Throws(new Exception("City not found"));
+            var weatherService = new WeatherService(mockHttpClient.Object, weatherRepositoryMock.Object, validation, mockConfiguration.Object);
 
-            var weatherResult = await weatherService.GetMaxWeatherByCityNamesAsync(cityNames, mockConfiguration.Object);
+            var weatherResult = await weatherService.GetMaxWeatherByCityNamesAsync(cityNames);
 
             Assert.Matches("Error, no successful requests. Failed requests count: [0-9]+.", weatherResult);
         }
