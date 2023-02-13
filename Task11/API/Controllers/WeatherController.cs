@@ -11,9 +11,15 @@ namespace API.Controllers
     public class WeatherController : Controller
     {
         private readonly IWeatherService weatherService;
-        public WeatherController(IValidation validation, IWeatherRepository weatherRepository, IWeatherHttpClient httpClient, IConfiguration configuration)
+        private readonly IWeatherScheduledService weatherScheduledService;
+        public WeatherController(IValidation validation,
+            IWeatherRepository weatherRepository,
+            IWeatherHttpClient httpClient,
+            IConfiguration configuration,
+            IWeatherScheduledService weatherScheduledService)
         {
             weatherService = new WeatherService(httpClient, weatherRepository, validation, configuration);
+            this.weatherScheduledService = weatherScheduledService;
         }
 
         [HttpGet("[action]")]
@@ -28,6 +34,20 @@ namespace API.Controllers
         {
             var result = await weatherService.GetFutureWeatherByCityNameAsync(cityName, days);
             return Ok(result);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult HistoryWeather(string cityName, DateTime from, DateTime to)
+        {
+            try
+            {
+                var result = weatherScheduledService.GetFilteredWeatherHIstory(cityName, from, to);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

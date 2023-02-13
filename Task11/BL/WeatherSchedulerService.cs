@@ -47,5 +47,15 @@ namespace BL
             };
             await weatherRepository.Insert(weather);
         }
+
+        public IEnumerable<WeatherHistory> GetFilteredWeatherHIstory(string cityName, DateTime from, DateTime to)
+        {
+            if (from != DateTime.MinValue && to != DateTime.MinValue)
+            {
+                var result = weatherRepository.Filter(weather => weather.Time > from && weather.Time < to && weather.Name == cityName);
+                return result;
+            }
+            else throw new ArgumentOutOfRangeException("Please, provide correct DateTime values");
+        }
     }
 }

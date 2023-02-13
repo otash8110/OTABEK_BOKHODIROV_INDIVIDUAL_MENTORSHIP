@@ -1,4 +1,5 @@
 ﻿using DAL.Persistent;
+using System.Collections;
 
 namespace DAL.WeatherHistoryEntity
 {
@@ -9,6 +10,12 @@ namespace DAL.WeatherHistoryEntity
         {
             this.context = context;
         }
+
+        public IEnumerable<WeatherHistory> Filter(Func<WeatherHistory, bool> filter)
+        {
+            return context.WeatherHistory.Where(filter).ToList();
+        }
+
         public async Task Insert(WeatherHistory weatherHistory)
         {
             await context.Set<WeatherHistory>().AddAsync(weatherHistory);
