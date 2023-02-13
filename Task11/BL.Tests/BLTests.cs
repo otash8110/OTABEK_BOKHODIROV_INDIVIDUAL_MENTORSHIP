@@ -26,7 +26,11 @@ namespace BL.Tests
         public async void GetWeatherByCityNameAsync_WhenCalled_ReturnsString()
         {
             var mockConfiguration = new Mock<IConfiguration>();
-            var weatherService = new WeatherService(httpClientMock.Object, weatherRepositoryMock.Object, validation, mockConfiguration.Object);
+            mockConfiguration.SetupGet(x => x["weather-api-key"]).Returns("ca399f8aa2c4f7fec1611d935942a7d4");
+            mockConfiguration.SetupGet(x => x["weather-api-key-secondary"]).Returns("adcfbeac4c0b4d2eb7c170313230401");
+
+            var httpClient = new Mock<WeatherHttpClient>(mockConfiguration.Object);
+            var weatherService = new WeatherService(httpClient.Object, weatherRepositoryMock.Object, validation, mockConfiguration.Object);
 
             var result = await weatherService.GetWeatherByCityNameAsync(cityName);
 

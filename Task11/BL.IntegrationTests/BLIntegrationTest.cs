@@ -17,6 +17,9 @@ namespace BL.IntegrationTests
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
+
+            configuration["weather-api-key"] = apiKey;
+            configuration["weather-api-key-secondary"] = apiKeySecond;
         }
         
 
