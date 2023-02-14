@@ -6,6 +6,6 @@ namespace BL
     {
         Task FetchAndSaveWeatherAsync(string cityName);
         Task FetchAndSaveManyWeathersAsync(IEnumerable<string> cityNames);
-        IEnumerable<WeatherHistory> GetFilteredWeatherHIstory(string cityName, DateTime from, DateTime to);
+        IEnumerable<WeatherHistory> GetFilteredWeatherHistory(string cityName, DateTime from, DateTime to);
     }
 }

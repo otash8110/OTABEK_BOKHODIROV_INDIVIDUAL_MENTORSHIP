@@ -48,7 +48,7 @@ namespace BL
             await weatherRepository.Insert(weather);
         }
 
-        public IEnumerable<WeatherHistory> GetFilteredWeatherHIstory(string cityName, DateTime from, DateTime to)
+        public IEnumerable<WeatherHistory> GetFilteredWeatherHistory(string cityName, DateTime from, DateTime to)
         {
             if (from != DateTime.MinValue && to != DateTime.MinValue)
             {

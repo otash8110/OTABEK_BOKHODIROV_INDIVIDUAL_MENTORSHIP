@@ -41,7 +41,7 @@ namespace API.Controllers
         {
             try
             {
-                var result = weatherScheduledService.GetFilteredWeatherHIstory(cityName, from, to);
+                var result = weatherScheduledService.GetFilteredWeatherHistory(cityName, from, to);
                 return Ok(result);
             }
             catch (Exception ex)

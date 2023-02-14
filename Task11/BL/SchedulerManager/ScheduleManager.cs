@@ -23,24 +23,27 @@ namespace BL.SchedulerManager
 
         public async Task ScheduleJobs(bool isReschedule)
         {
-            var citiesGrouped = citiesOption.CurrentValue.Cities.OrderBy(c => c.Name).GroupBy(c => c.Timer);
-
-            if (isReschedule)
+            if (citiesOption.CurrentValue.Cities != null)
             {
-                await scheduler.Clear();
-            }
+                var citiesGrouped = citiesOption.CurrentValue.Cities.OrderBy(c => c.Name).GroupBy(c => c.Timer);
 
-            foreach (var cityTime in citiesGrouped)
-            {
-                if (cityTime.Count() > 1)
+                if (isReschedule)
                 {
-                    await ScheduleManyCitiesJob(cityTime);
-                    continue;
+                    await scheduler.Clear();
                 }
 
-                foreach (var city in cityTime)
+                foreach (var cityTime in citiesGrouped)
                 {
-                    await ScheduleOneCityJob(city);
+                    if (cityTime.Count() > 1)
+                    {
+                        await ScheduleManyCitiesJob(cityTime);
+                        continue;
+                    }
+
+                    foreach (var city in cityTime)
+                    {
+                        await ScheduleOneCityJob(city);
+                    }
                 }
             }
         }
