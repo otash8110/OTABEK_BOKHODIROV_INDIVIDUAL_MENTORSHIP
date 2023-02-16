@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using DAL.WeatherHistoryEntity;
+using DAL.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace DAL
 {
@@ -17,6 +19,11 @@ namespace DAL
             });
 
             services.AddScoped<IWeatherHistoryRepository, WeatherHistoryRepository>();
+            services.AddScoped<AppDbContextInitializer>();
+
+            services.AddIdentityCore<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             return services;
         }

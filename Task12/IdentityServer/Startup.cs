@@ -2,8 +2,14 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using DAL;
+using DAL.Identity;
+using DAL.Persistent;
+using IdentityServer.UserPasswordValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -22,6 +28,9 @@ namespace IdentityServer
         {
             // uncomment, if you want to add an MVC-based UI
             //services.AddControllersWithViews();
+            IConfiguration configuration = services.BuildServiceProvider().GetService<IConfiguration>();
+
+            services.AddDALServices(configuration);
 
             var builder = services.AddIdentityServer(options =>
             {
@@ -30,7 +39,9 @@ namespace IdentityServer
             })
                 .AddInMemoryIdentityResources(Config.IdentityResources)
                 .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryClients(Config.Clients);
+                .AddInMemoryClients(Config.Clients)
+                .AddProfileService<UserProfileService>()
+                .AddResourceOwnerValidator<UserPasswordValidator>();
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();

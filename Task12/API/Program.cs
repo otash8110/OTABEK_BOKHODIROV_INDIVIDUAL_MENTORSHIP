@@ -1,12 +1,13 @@
 using BL;
 using DAL;
+using DAL.Persistent;
 using Microsoft.OpenApi.Models;
 
 namespace API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,12 @@ namespace API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                using var scope = app.Services.CreateScope();
+
+                var initializer = scope.ServiceProvider.GetRequiredService<AppDbContextInitializer>();
+                await initializer.InitializeAsync();
+                await initializer.SeedDatabase();
             }
 
             app.UseHttpsRedirection();

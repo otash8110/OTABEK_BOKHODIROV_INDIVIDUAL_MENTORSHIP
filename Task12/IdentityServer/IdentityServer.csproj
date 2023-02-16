@@ -6,8 +6,11 @@
   
   <ItemGroup>
     <PackageReference Include="IdentityServer4" Version="4.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.14" />
 
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\DAL\DAL.csproj" />
   </ItemGroup>
 </Project>
