@@ -52,5 +52,20 @@ namespace API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("[action]")]
+        public IActionResult SubscribeUser(string cityName, DateTime from, DateTime to)
+        {
+            try
+            {
+                var result = weatherScheduledService.GetFilteredWeatherHistory(cityName, from, to);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

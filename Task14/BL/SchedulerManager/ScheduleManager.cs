@@ -1,9 +1,11 @@
-﻿using BL.QuartzJobs;
+﻿using BL.Enums;
+using BL.QuartzJobs;
 using DAL.WeatherHistoryOptionsModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Quartz;
+using Quartz.Impl.Matchers;
 
 namespace BL.SchedulerManager
 {
@@ -12,6 +14,7 @@ namespace BL.SchedulerManager
         private IOptionsMonitor<CitiesOption> citiesOption;
         private readonly ISchedulerFactory schedulerFactory;
         private IScheduler scheduler;
+        private readonly string weatherStatisticsGroupName = "weatherStatistics";
 
         public ScheduleManager(IOptionsMonitor<CitiesOption> citiesOption,
             ISchedulerFactory schedulerFactory)
@@ -45,6 +48,46 @@ namespace BL.SchedulerManager
                         await ScheduleOneCityJob(city);
                     }
                 }
+            }
+        }
+
+        public async Task ScheduleWeatherStatisticsJob(string userId, IEnumerable<string> cityNames, Period period)
+        {
+            if (await IsJobExistAndRunning(userId))
+            {
+                await scheduler.DeleteJob(JobKey.Create(userId));
+            }
+
+            var job = JobBuilder.Create<IJob>()
+                .WithIdentity(userId)
+                .Build();
+            var trigger = TriggerBuilder.Create()
+                .WithIdentity(userId)
+                .WithSimpleSchedule(x => x
+                                .WithIntervalInHours((int) period)
+                                .RepeatForever())
+                .Build();
+
+            await scheduler.ScheduleJob(job, trigger);
+        }
+
+        private async Task<bool> IsJobExistAndRunning(string userId)
+        {
+            var groupMatcher = GroupMatcher<JobKey>.GroupContains(weatherStatisticsGroupName);
+            var jobKeys = await scheduler.GetJobKeys(groupMatcher);
+
+            if (jobKeys.Count == 0)
+            {
+                return false;
+            }
+            else
+            {
+                foreach (var jobKey in jobKeys)
+                {
+                    if (jobKey.Name == userId) { return true; }
+                }
+
+                return false;
             }
         }
 
