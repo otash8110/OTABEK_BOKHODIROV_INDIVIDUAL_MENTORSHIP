@@ -9,7 +9,7 @@ using Quartz.Impl.Matchers;
 
 namespace BL.SchedulerManager
 {
-    public class ScheduleManager : ISchedulerManager, IHostedService
+    public class ScheduleManager : ISchedulerManager
     {
         private IOptionsMonitor<CitiesOption> citiesOption;
         private readonly ISchedulerFactory schedulerFactory;
@@ -55,16 +55,16 @@ namespace BL.SchedulerManager
         {
             if (await IsJobExistAndRunning(userId))
             {
-                await scheduler.DeleteJob(JobKey.Create(userId));
+                await scheduler.DeleteJob(JobKey.Create(userId, weatherStatisticsGroupName));
             }
 
-            var job = JobBuilder.Create<IJob>()
-                .WithIdentity(userId)
+            var job = JobBuilder.Create<ReportWeatherStatisticsJob>()
+                .WithIdentity(userId, weatherStatisticsGroupName)
                 .Build();
             var trigger = TriggerBuilder.Create()
                 .WithIdentity(userId)
                 .WithSimpleSchedule(x => x
-                                .WithIntervalInHours((int) period)
+                                .WithIntervalInSeconds(10)
                                 .RepeatForever())
                 .Build();
 

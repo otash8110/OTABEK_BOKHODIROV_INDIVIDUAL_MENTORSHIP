@@ -22,7 +22,8 @@ namespace BL
             });
 
             services.AddScoped<IWeatherScheduledService, WeatherSchedulerService>();
-            services.AddHostedService<ScheduleManager>();
+            services.AddSingleton<ScheduleManager>();
+            services.AddHostedService(x => x.GetService<ScheduleManager>());
 
             return services;
         }
