@@ -76,19 +76,7 @@ namespace BL.SchedulerManager
             var groupMatcher = GroupMatcher<JobKey>.GroupContains(weatherStatisticsGroupName);
             var jobKeys = await scheduler.GetJobKeys(groupMatcher);
 
-            if (jobKeys.Count == 0)
-            {
-                return false;
-            }
-            else
-            {
-                foreach (var jobKey in jobKeys)
-                {
-                    if (jobKey.Name == userId) { return true; }
-                }
-
-                return false;
-            }
+            return jobKeys.Count > 0 && jobKeys.Where(n => n.Name == userId).Select(n => n.Name == userId).First() ? true : false;
         }
 
         private async Task ScheduleManyCitiesJob(IGrouping<string, City> group)
