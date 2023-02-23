@@ -64,9 +64,13 @@ namespace BL.SchedulerManager
             var trigger = TriggerBuilder.Create()
                 .WithIdentity(userId)
                 .WithSimpleSchedule(x => x
-                                .WithIntervalInSeconds(10)
+                                .WithIntervalInSeconds((int) period)
                                 .RepeatForever())
                 .Build();
+
+            job.JobDataMap["UserId"] = userId;
+            job.JobDataMap["cityNames"] = cityNames;
+            job.JobDataMap["Period"] = period;
 
             await scheduler.ScheduleJob(job, trigger);
         }

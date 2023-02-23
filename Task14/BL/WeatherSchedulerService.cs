@@ -57,5 +57,33 @@ namespace BL
             }
             else throw new ArgumentOutOfRangeException("Please, provide correct DateTime values");
         }
+
+        public async Task<string> GetWeatherHistoryForPeriodReport(IEnumerable<string> cityNames, DateTime from, DateTime to)
+        {
+            if (from != DateTime.MinValue && to != DateTime.MinValue)
+            {
+                var finalString = $"The report was generated: {DateTime.Now}. Period: {from} - {to}\n";
+                var allWeatherHistory = await weatherRepository.GetAll();
+                var result = allWeatherHistory.Where(w => cityNames.Contains(w.Name))
+                    .GroupBy(p => p.Name)
+                        .Select(w => new WeatherHistory { Name = w.Key, Temperature = w.Average(i => i.Temperature) });
+
+                foreach (var city in cityNames)
+                {
+                    if(result.Any(w => w.Name == city))
+                    {
+                        var oneAverageWeather = result.Where(w => w.Name == city).FirstOrDefault();
+                        finalString += $"{city} average temperature: { oneAverageWeather.Temperature }\n";
+                    }
+                    else
+                    {
+                        finalString += $"{city}: no statistics.\n";
+                    }
+                }
+
+                return finalString;
+            }
+            else throw new ArgumentOutOfRangeException("Please, provide correct DateTime values");
+        }
     }
 }

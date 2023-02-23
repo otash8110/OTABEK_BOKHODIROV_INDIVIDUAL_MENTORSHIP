@@ -5,5 +5,6 @@
         Task Insert(WeatherHistory weatherHistory);
         Task InsertMany(IEnumerable<WeatherHistory> weatherHistoryList);
         IEnumerable<WeatherHistory> Filter(Func<WeatherHistory, bool> filter);
+        Task<IEnumerable<WeatherHistory>> GetAll();
     }
 }

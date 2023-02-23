@@ -1,19 +1,34 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using BL.Enums;
+using Microsoft.Extensions.Logging;
 using Quartz;
 
 namespace BL.QuartzJobs
 {
     public class ReportWeatherStatisticsJob : IJob
     {
-        public ReportWeatherStatisticsJob()
+        private readonly IWeatherScheduledService weatherService;
+
+        public ReportWeatherStatisticsJob(IWeatherScheduledService weatherService)
         {
+            this.weatherService = weatherService;
         }
 
-        public Task Execute(IJobExecutionContext context)
+        public async Task Execute(IJobExecutionContext context)
         {
-            System.Diagnostics.Debug.WriteLine($"REPORT WEATHER EXEC: {context.FireTimeUtc}");
+            var dataMap = context.JobDetail.JobDataMap;
 
-            return Task.CompletedTask;
+            var cityNames = (IEnumerable<string>) dataMap["cityNames"];
+            var userId = dataMap["UserId"];
+            var period = (Period) dataMap["Period"];
+
+            var from = DateTime.Now.AddHours(-(int)period);
+            var to = DateTime.Now;
+
+            var result = await weatherService.GetWeatherHistoryForPeriodReport(cityNames, from, to);
+
+            System.Diagnostics.Debug.WriteLine($"REPORT WEATHER EXEC: {context.FireTimeUtc}, {from}, {to}");
+
+            return;
         }
     }
 }
