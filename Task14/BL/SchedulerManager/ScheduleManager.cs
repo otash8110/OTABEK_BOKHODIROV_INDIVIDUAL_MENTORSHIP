@@ -55,7 +55,7 @@ namespace BL.SchedulerManager
         {
             if (await IsJobExistAndRunning(userId))
             {
-                await scheduler.DeleteJob(JobKey.Create(userId, weatherStatisticsGroupName));
+                await DeleteScheduledJobInWeatherReport(userId);
             }
 
             var job = JobBuilder.Create<ReportWeatherStatisticsJob>()
@@ -77,6 +77,11 @@ namespace BL.SchedulerManager
             var jobKeys = await scheduler.GetJobKeys(groupMatcher);
 
             return jobKeys.Count > 0 && jobKeys.Where(n => n.Name == userId).Select(n => n.Name == userId).First() ? true : false;
+        }
+
+        private async Task<bool> DeleteScheduledJobInWeatherReport(string userId)
+        {
+            return await scheduler.DeleteJob(JobKey.Create(userId, weatherStatisticsGroupName));
         }
 
         private async Task ScheduleManyCitiesJob(IGrouping<string, City> group)
