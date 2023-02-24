@@ -48,7 +48,7 @@ namespace DAL.Persistent
             }
 
             var administrator = new ApplicationUser { UserName = "administrator@localhost", Email = "administrator@localhost"};
-            var user = new ApplicationUser { UserName = "user@localhost", Email = "user@localhost"};
+            var user = new ApplicationUser { UserName = "oxyman21@mail.ru", Email = "oxyman21@mail.ru" };
 
             if (userManager.Users.All(u => u.UserName != administrator.UserName))
             {
