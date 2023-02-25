@@ -64,7 +64,7 @@ namespace BL
             {
                 var finalString = $"The report was generated: {DateTime.Now}. Period: {from} - {to}\n";
                 var allWeatherHistory = await weatherRepository.GetAll();
-                var result = allWeatherHistory.Where(w => cityNames.Contains(w.Name))
+                var result = allWeatherHistory.Where(w => cityNames.Contains(w.Name) && w.Time >= from && w.Time <= to)
                     .GroupBy(p => p.Name)
                         .Select(w => new WeatherHistory { Name = w.Key, Temperature = w.Average(i => i.Temperature) });
 

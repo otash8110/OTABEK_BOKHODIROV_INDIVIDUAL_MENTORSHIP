@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using DAL.WeatherHistoryEntity;
 using DAL.Identity;
 using Microsoft.AspNetCore.Identity;
+using DAL.WeatherHistoryOptionsModels;
 
 namespace DAL
 {
@@ -24,6 +25,8 @@ namespace DAL
             services.AddIdentityCore<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
 
             return services;
         }

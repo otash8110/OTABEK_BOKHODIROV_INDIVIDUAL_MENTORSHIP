@@ -1,5 +1,6 @@
 ﻿using API.Services;
 using BL.HttpService;
+using BL.Options;
 using BL.Validation;
 using DAL;
 using DAL.WeatherHistoryOptionsModels;
@@ -19,6 +20,7 @@ namespace API
             services.AddScoped<ITokenService, TokenService>();
 
             services.AddOptions();
+            services.Configure<RabbitMqConfig>(configuration.GetSection("RabbitMqConfig"));
             services.Configure<CitiesOption>(configuration);
 
             services.AddAuthentication("Bearer")
