@@ -12,8 +12,13 @@ namespace API.Services
 
         public async Task<TokenResponse> GetToken(string scope, string email, string password)
         {
-            using var client = new HttpClient();
-            var discoveryDocument = await client.GetDiscoveryDocumentAsync("https://localhost:5001");
+            var ur = Environment.GetEnvironmentVariable("ISURL");
+            var handler = new HttpClientHandler()
+            {
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+            };
+            using var client = new HttpClient(handler);
+            var discoveryDocument = await client.GetDiscoveryDocumentAsync($"https://{ur}:10980");
             var tokenResponse = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
             {
                 UserName = email,

@@ -1,6 +1,7 @@
 using BL;
 using DAL;
 using DAL.Persistent;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace API
@@ -56,6 +57,7 @@ namespace API
                 var initializer = scope.ServiceProvider.GetRequiredService<AppDbContextInitializer>();
                 await initializer.InitializeAsync();
                 await initializer.SeedDatabase();
+                IdentityModelEventSource.ShowPII = true;
             }
 
             app.UseHttpsRedirection();

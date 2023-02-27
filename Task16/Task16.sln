@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "IdentityServer\IdentityServer.csproj", "{0F10ED40-4C42-4862-8F50-7C8ED855FC9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMQ.Worker", "RabbitMQ.Worker\RabbitMQ.Worker.csproj", "{CC0FCDCD-7AE6-4F1E-A7BA-3CC151304701}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMQ.Worker", "RabbitMQ.Worker\RabbitMQ.Worker.csproj", "{CC0FCDCD-7AE6-4F1E-A7BA-3CC151304701}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{35A8ED27-DC9C-4E1D-AE64-39285052BAF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{CC0FCDCD-7AE6-4F1E-A7BA-3CC151304701}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC0FCDCD-7AE6-4F1E-A7BA-3CC151304701}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC0FCDCD-7AE6-4F1E-A7BA-3CC151304701}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35A8ED27-DC9C-4E1D-AE64-39285052BAF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35A8ED27-DC9C-4E1D-AE64-39285052BAF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35A8ED27-DC9C-4E1D-AE64-39285052BAF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35A8ED27-DC9C-4E1D-AE64-39285052BAF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

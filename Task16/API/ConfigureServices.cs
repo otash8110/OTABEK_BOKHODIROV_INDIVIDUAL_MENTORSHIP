@@ -4,9 +4,6 @@ using BL.Options;
 using BL.Validation;
 using DAL;
 using DAL.WeatherHistoryOptionsModels;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace API
 {
@@ -24,15 +21,17 @@ namespace API
             services.Configure<CitiesOption>(configuration);
 
             services.AddAuthentication("Bearer")
-            .AddJwtBearer("Bearer", options =>
-            {
-                options.Authority = "https://localhost:5001";
-
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateAudience = false
-                };
-            });
+                .AddIdentityServerAuthentication("Bearer",
+                    jwtOptions =>
+                    {
+                        jwtOptions.Authority = "https://192.168.1.8:10980";
+                        jwtOptions.RequireHttpsMetadata = false;
+                        jwtOptions.JwtBackChannelHandler = new HttpClientHandler
+                        {
+                            ServerCertificateCustomValidationCallback =
+                                  (message, certificate, chain, sslPolicyErrors) => true
+                        };
+                    });
 
             return services;
         }
