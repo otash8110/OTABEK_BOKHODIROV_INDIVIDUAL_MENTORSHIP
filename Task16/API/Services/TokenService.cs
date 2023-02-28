@@ -18,7 +18,7 @@ namespace API.Services
                 ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
             };
             using var client = new HttpClient(handler);
-            var discoveryDocument = await client.GetDiscoveryDocumentAsync($"https://{ur}:10980");
+            var discoveryDocument = await client.GetDiscoveryDocumentAsync($"https://{ur}:3094");
             var tokenResponse = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
             {
                 UserName = email,
